@@ -6,12 +6,22 @@
             <corners android:radius="2.0dip" />
         </shape>
     </item>
+    <item android:id="@android:id/secondaryProgress">
+        <clip
+            android:clipOrientation="horizontal"
+            android:gravity="left">
+            <shape>
+                <solid android:color="@color/color_FFFFFF_80" />
+                <corners android:radius="2.0dip" />
+            </shape>
+        </clip>
+    </item>
     <item android:id="@android:id/progress">
         <clip
             android:clipOrientation="horizontal"
             android:gravity="left">
             <shape>
-                <solid android:color="?attr/color_theme_80" />
+                <solid android:color="?attr/color_theme" />
                 <corners android:radius="2.0dip" />
             </shape>
         </clip>

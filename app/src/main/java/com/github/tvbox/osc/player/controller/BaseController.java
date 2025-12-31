@@ -167,6 +167,9 @@ public abstract class BaseController extends BaseVideoController implements Gest
         int percent = (int) (((double) position / (double) duration) * 100);
         mDialogVideoProgressBar.setProgress(percent);
         mDialogVideoPauseBar.setProgress(percent);
+        int bufferPercent = mControlWrapper.getBufferedPercentage();
+        mDialogVideoProgressBar.setSecondaryProgress(bufferPercent);
+        mDialogVideoPauseBar.setSecondaryProgress(bufferPercent);
     }
 
     @Override
