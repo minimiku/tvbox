@@ -1304,4 +1304,21 @@
 
     </LinearLayout>
 
+    <!-- 多线程缓冲状态调试信息 -->
+    <TextView
+        android:id="@+id/tv_buffer_debug_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/vs_20"
+        android:layout_marginRight="@dimen/vs_20"
+        android:layout_marginBottom="@dimen/vs_80"
+        android:background="#80000000"
+        android:padding="8dp"
+        android:textColor="#00FF00"
+        android:textSize="12sp"
+        android:fontFamily="monospace"
+        android:visibility="gone"
+        android:tag="buffer_debug_info" />
+
 </FrameLayout>

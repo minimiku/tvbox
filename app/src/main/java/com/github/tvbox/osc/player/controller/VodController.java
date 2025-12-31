@@ -68,6 +68,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import xyz.doikki.videoplayer.exo.BufferStatusManager;
 import xyz.doikki.videoplayer.player.VideoView;
 import xyz.doikki.videoplayer.util.PlayerUtils;
 
@@ -273,6 +274,9 @@ public class VodController extends BaseController {
     TextView seekTime; //右上角进度时间显示
     LinearLayout mScreendisplay; //增加屏显开关
 
+    // 多线程缓冲调试信息
+    TextView mBufferDebugInfo;
+
     // bottom container
     LinearLayout mBottomRoot;
     TextView mTime;
@@ -442,6 +446,10 @@ public class VodController extends BaseController {
         mTopRoot2 = findViewById(R.id.tv_top_r_container);
         seekTime = findViewById(R.id.tv_seek_time); //右上角进度时间显示
         mScreendisplay = findViewById(R.id.screen_display); //增加屏显开关
+
+        // 多线程缓冲调试信息
+        mBufferDebugInfo = findViewWithTag("buffer_debug_info");
+        initBufferDebugInfo();
 
         mLockView.setOnClickListener(new OnClickListener() {
             @Override
@@ -1678,4 +1686,68 @@ public class VodController extends BaseController {
             }
         }
     }	    
+
+    /**
+     * 初始化多线程缓冲调试信息显示
+     */
+    private void initBufferDebugInfo() {
+        if (mBufferDebugInfo == null) return;
+        
+        // 检查是否开启了多线程缓冲
+        boolean isMultithreadEnabled = com.github.tvbox.osc.util.HawkUtils.getExoBufferMultithread();
+        
+        if (isMultithreadEnabled) {
+            mBufferDebugInfo.setVisibility(VISIBLE);
+            
+            // 设置监听器，实时更新状态
+            BufferStatusManager.getInstance().setListener(new BufferStatusManager.OnStatusChangeListener() {
+                @Override
+                public void onStatusChanged() {
+                    // 在 UI 线程更新
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            updateBufferDebugInfo();
+                        }
+                    });
+                }
+            });
+            
+            // 初始显示
+            updateBufferDebugInfo();
+        } else {
+            mBufferDebugInfo.setVisibility(GONE);
+        }
+    }
+    
+    private void updateBufferDebugInfo() {
+        if (mBufferDebugInfo == null) return;
+        
+        BufferStatusManager manager = BufferStatusManager.getInstance();
+        StringBuilder sb = new StringBuilder();
+        sb.append("【多线程缓冲】\n");
+        sb.append("状态: ").append(manager.isMultithreadEnabled() ? "✓ 开启" : "✗ 关闭").append("\n");
+        
+        if (manager.isMultithreadEnabled()) {
+            sb.append("线程: ").append(manager.getThreadCount()).append("\n");
+            sb.append("活跃: ").append(manager.getActiveTaskCount()).append("\n");
+            sb.append("命中: ").append(manager.getPreloadHitCount())
+              .append(" / 未中: ").append(manager.getPreloadMissCount()).append("\n");
+            
+            int total = manager.getPreloadHitCount() + manager.getPreloadMissCount();
+            if (total > 0) {
+                int hitRate = (manager.getPreloadHitCount() * 100) / total;
+                sb.append("命中率: ").append(hitRate).append("%\n");
+            }
+            
+            long bytes = manager.getTotalBytesLoaded();
+            if (bytes > 1024 * 1024) {
+                sb.append("已加载: ").append(String.format("%.1f MB", bytes / 1024.0 / 1024.0));
+            } else if (bytes > 1024) {
+                sb.append("已加载: ").append(String.format("%.1f KB", bytes / 1024.0));
+            }
+        }
+        
+        mBufferDebugInfo.setText(sb.toString());
+    }
 }
