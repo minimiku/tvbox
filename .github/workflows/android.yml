@@ -26,11 +26,21 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
       
-    - name: Build with Gradle
+    - name: Build ARM64 (64-bit)
       run: ./gradlew assembleArm64GenericNormalDebug --stacktrace
 
-    - name: Upload APK
+    - name: Build ARM (32-bit)
+      run: ./gradlew assembleArmGenericNormalDebug --stacktrace
+
+    - name: Upload ARM64 APK (for phones)
       uses: actions/upload-artifact@v4
       with:
-        name: tvbox-multithread-debug
+        name: tvbox-arm64-debug
         path: app/build/outputs/apk/arm64GenericNormal/debug/*.apk
+
+    - name: Upload ARM APK (for TV boxes)
+      uses: actions/upload-artifact@v4
+      with:
+        name: tvbox-arm-debug
+        path: app/build/outputs/apk/armGenericNormal/debug/*.apk
+
