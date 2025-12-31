@@ -119,6 +119,9 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
 
     @Override
     public void setDataSource(String path, Map<String, String> headers) {
+        // 切换视频时清理多线程缓冲缓存
+        ConcurrentDataSource.clearAllCache();
+        
         this.path = path;
         this.headers = headers;
         mMediaSource = mMediaSourceHelper.getMediaSource(path, headers);
