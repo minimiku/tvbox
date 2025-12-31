@@ -30,7 +30,7 @@ jobs:
       run: ./gradlew assembleArm64GenericNormalDebug --stacktrace
 
     - name: Build ARM (32-bit)
-      run: ./gradlew assembleArmGenericNormalDebug --stacktrace
+      run: ./gradlew assembleArmeabiGenericNormalDebug --stacktrace
 
     - name: Upload ARM64 APK (for phones)
       uses: actions/upload-artifact@v4
@@ -42,5 +42,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: tvbox-arm-debug
-        path: app/build/outputs/apk/armGenericNormal/debug/*.apk
+        path: app/build/outputs/apk/armeabiGenericNormal/debug/*.apk
 
