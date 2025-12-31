@@ -246,6 +246,22 @@ public class HawkUtils {
         return String.valueOf(getExoBufferThreadCount());
     }
 
+    /**
+     * 是否显示调试信息
+     */
+    public static boolean getExoDebugInfo() {
+        return Hawk.get(HawkConfig.EXO_DEBUG_INFO, false);
+    }
+
+    public static void nextExoDebugInfo() {
+        boolean current = getExoDebugInfo();
+        Hawk.put(HawkConfig.EXO_DEBUG_INFO, !current);
+    }
+
+    public static String getExoDebugInfoDesc() {
+        return getExoDebugInfo() ? "开启" : "关闭";
+    }
+
     // Vod 播放器首选
     public static int getVodPlayerPreferred() {
         return Hawk.get(HawkConfig.VOD_PLAYER_PREFERRED, 0);

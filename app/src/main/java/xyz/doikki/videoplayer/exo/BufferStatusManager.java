@@ -22,6 +22,7 @@ public class BufferStatusManager {
     private int preloadHitCount = 0;
     private int preloadMissCount = 0;
     private long totalBytesLoaded = 0;
+    private String videoType = "未知"; // 视频类型：HLS、DASH、MP4等
     private final CopyOnWriteArrayList<String> recentLogs = new CopyOnWriteArrayList<>();
     private static final int MAX_LOG_SIZE = 20;
     
@@ -97,8 +98,15 @@ public class BufferStatusManager {
         preloadHitCount = 0;
         preloadMissCount = 0;
         totalBytesLoaded = 0;
+        videoType = "未知";
         recentLogs.clear();
         addLog("状态已重置");
+        notifyChange();
+    }
+    
+    public void setVideoType(String type) {
+        this.videoType = type;
+        addLog("视频类型: " + type);
         notifyChange();
     }
     
@@ -109,6 +117,7 @@ public class BufferStatusManager {
     public int getPreloadHitCount() { return preloadHitCount; }
     public int getPreloadMissCount() { return preloadMissCount; }
     public long getTotalBytesLoaded() { return totalBytesLoaded; }
+    public String getVideoType() { return videoType; }
     
     public String getStatusSummary() {
         StringBuilder sb = new StringBuilder();

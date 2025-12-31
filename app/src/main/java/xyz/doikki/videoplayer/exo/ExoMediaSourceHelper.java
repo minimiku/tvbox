@@ -128,8 +128,10 @@ public final class ExoMediaSourceHelper {
         }
         switch (contentType) {
             case C.TYPE_DASH:
+                BufferStatusManager.getInstance().setVideoType("DASH (mpd)");
                 return new DashMediaSource.Factory(factory).createMediaSource(MediaItem.fromUri(contentUri));
             case C.TYPE_HLS:
+                BufferStatusManager.getInstance().setVideoType("HLS (m3u8)");
                 // 触发 m3u8 解析（多线程缓冲需要提前获取分片列表）
                 if (HawkUtils.getExoBufferMultithread()) {
                     HlsSegmentManager.getInstance().parseAndCachePlaylist(uri);
@@ -143,6 +145,7 @@ public final class ExoMediaSourceHelper {
             //return new HlsMediaSource.Factory(factory).createMediaSource(MediaItem.fromUri(contentUri));
             default:
             case C.TYPE_OTHER:
+                BufferStatusManager.getInstance().setVideoType("普通流 (MP4等)");
                 return new ProgressiveMediaSource.Factory(factory).createMediaSource(MediaItem.fromUri(contentUri));
         }
     }

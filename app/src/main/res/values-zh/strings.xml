@@ -210,6 +210,7 @@
         <item>渲染模式</item>
         <item>多线程缓冲</item>
         <item>缓冲线程数</item>
+        <item>调试信息</item>
     </string-array>
 
     <string-array name="media_content_tag_ExoPlayer">
@@ -217,6 +218,7 @@
         <item>ExoRendererMode</item>
         <item>ExoBufferMultithread</item>
         <item>ExoBufferThreadCount</item>
+        <item>ExoDebugInfo</item>
     </string-array>
 
     <string-array name="media_content_ExoPlayer_renderer">

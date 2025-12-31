@@ -82,6 +82,9 @@ public class MediaSettingDialog extends BaseDialog {
                 case ExoBufferThreadCount:
                     HawkUtils.nextExoBufferThreadCount();
                     break;
+                case ExoDebugInfo:
+                    HawkUtils.nextExoDebugInfo();
+                    break;
             }
             contentAdapter.refreshNotifyItemChanged(i);
         });
@@ -170,6 +173,9 @@ public class MediaSettingDialog extends BaseDialog {
                 case ExoBufferThreadCount:
                     tvContent.setText(HawkUtils.getExoBufferThreadCountDesc());
                     break;
+                case ExoDebugInfo:
+                    tvContent.setText(HawkUtils.getExoDebugInfoDesc());
+                    break;
             }
         }
     }
@@ -199,9 +205,8 @@ public class MediaSettingDialog extends BaseDialog {
         }
     }
 
-    //数据枚举
     public enum MediaSettingEnum {
         IjkMediaCodecMode, IjkCache, ExoRenderer, ExoRendererMode, VodPlayerPreferred,
-        ExoBufferMultithread, ExoBufferThreadCount
+        ExoBufferMultithread, ExoBufferThreadCount, ExoDebugInfo
     }
 }

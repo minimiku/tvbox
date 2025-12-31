@@ -1693,10 +1693,10 @@ public class VodController extends BaseController {
     private void initBufferDebugInfo() {
         if (mBufferDebugInfo == null) return;
         
-        // 检查是否开启了多线程缓冲
-        boolean isMultithreadEnabled = com.github.tvbox.osc.util.HawkUtils.getExoBufferMultithread();
+        // 检查是否开启了调试信息显示
+        boolean showDebugInfo = com.github.tvbox.osc.util.HawkUtils.getExoDebugInfo();
         
-        if (isMultithreadEnabled) {
+        if (showDebugInfo) {
             mBufferDebugInfo.setVisibility(VISIBLE);
             
             // 设置监听器，实时更新状态
@@ -1725,11 +1725,13 @@ public class VodController extends BaseController {
         
         BufferStatusManager manager = BufferStatusManager.getInstance();
         StringBuilder sb = new StringBuilder();
-        sb.append("【多线程缓冲】\n");
-        sb.append("状态: ").append(manager.isMultithreadEnabled() ? "✓ 开启" : "✗ 关闭").append("\n");
         
+        // 显示视频类型
+        sb.append("视频: ").append(manager.getVideoType()).append("\n");
+        
+        // 多线程缓冲状态
         if (manager.isMultithreadEnabled()) {
-            sb.append("线程: ").append(manager.getThreadCount()).append("\n");
+            sb.append("多线程: ✓ (").append(manager.getThreadCount()).append("线程)\n");
             sb.append("活跃: ").append(manager.getActiveTaskCount()).append("\n");
             sb.append("命中: ").append(manager.getPreloadHitCount())
               .append(" / 未中: ").append(manager.getPreloadMissCount()).append("\n");
@@ -1746,6 +1748,9 @@ public class VodController extends BaseController {
             } else if (bytes > 1024) {
                 sb.append("已加载: ").append(String.format("%.1f KB", bytes / 1024.0));
             }
+        } else {
+            sb.append("多线程: ✗ 关闭\n");
+            sb.append("(仅 HLS 视频支持)");
         }
         
         mBufferDebugInfo.setText(sb.toString());
