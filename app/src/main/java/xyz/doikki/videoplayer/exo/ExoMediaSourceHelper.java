@@ -30,6 +30,7 @@ import androidx.media3.extractor.ts.DefaultTsPayloadReaderFactory;
 import androidx.media3.extractor.ts.TsExtractor;
 
 import com.github.tvbox.osc.util.FileUtils;
+import com.github.tvbox.osc.util.HawkUtils;
 import com.google.androidx.media3.exoplayer.ext.okhttp.OkHttpDataSource;
 
 import java.io.File;
@@ -129,6 +130,10 @@ public final class ExoMediaSourceHelper {
             case C.TYPE_DASH:
                 return new DashMediaSource.Factory(factory).createMediaSource(MediaItem.fromUri(contentUri));
             case C.TYPE_HLS:
+                // 触发 m3u8 解析（多线程缓冲需要提前获取分片列表）
+                if (HawkUtils.getExoBufferMultithread()) {
+                    HlsSegmentManager.getInstance().parseAndCachePlaylist(uri);
+                }
                 // 根据配置决定是否使用多线程缓冲
                 DataSource.Factory hlsFactory = new ConcurrentDataSourceFactory(mHttpDataSourceFactory);
                 return new HlsMediaSource.Factory(hlsFactory)
