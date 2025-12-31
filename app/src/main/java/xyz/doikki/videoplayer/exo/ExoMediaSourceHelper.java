@@ -129,7 +129,9 @@ public final class ExoMediaSourceHelper {
             case C.TYPE_DASH:
                 return new DashMediaSource.Factory(factory).createMediaSource(MediaItem.fromUri(contentUri));
             case C.TYPE_HLS:
-                return new HlsMediaSource.Factory(mHttpDataSourceFactory)
+                // 根据配置决定是否使用多线程缓冲
+                DataSource.Factory hlsFactory = new ConcurrentDataSourceFactory(mHttpDataSourceFactory);
+                return new HlsMediaSource.Factory(hlsFactory)
                         .setAllowChunklessPreparation(true)
                         .setExtractorFactory(new MyHlsExtractorFactory())
                         .createMediaSource(MediaItem.fromUri(contentUri));

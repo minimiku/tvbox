@@ -43,6 +43,8 @@ public class HawkConfig {
 
     public static final String EXO_RENDERER = "exo_renderer";
     public static final String EXO_RENDERER_MODE = "exo_renderer_mode";
+    public static final String EXO_BUFFER_MULTITHREAD = "exo_buffer_multithread"; // 多线程缓冲开关
+    public static final String EXO_BUFFER_THREAD_COUNT = "exo_buffer_thread_count"; // 缓冲线程数量 (1-8)
     public static final String VOD_PLAYER_PREFERRED = "vod_player_preferred";
 
 

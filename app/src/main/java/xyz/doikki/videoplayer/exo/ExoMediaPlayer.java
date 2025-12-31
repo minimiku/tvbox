@@ -76,7 +76,21 @@ public class ExoMediaPlayer extends AbstractPlayer implements Player.Listener {
             mTrackSelector = new DefaultTrackSelector(mAppContext);
         }
         if (mLoadControl == null) {
-            mLoadControl = new DefaultLoadControl();
+            if (HawkUtils.getExoBufferMultithread()) {
+                // 开启多线程时，使用更激进的缓冲策略
+                mLoadControl = new DefaultLoadControl.Builder()
+                        .setBufferDurationsMs(
+                                30000,  // 最少缓冲 30s
+                                60000,  // 最大缓冲 60s
+                                1500,   // 播放前最少缓冲 1.5s
+                                3000    // 卡顿后恢复播放最少缓冲 3s
+                        )
+                        .setPrioritizeTimeOverSizeThresholds(true)
+                        .build();
+                Log.d("ExoMediaPlayer", "已启用多线程缓冲优化参数");
+            } else {
+                mLoadControl = new DefaultLoadControl();
+            }
         }
         mTrackSelector.setParameters(mTrackSelector.getParameters().buildUpon().setPreferredTextLanguage(Locale.getDefault().getISO3Language()).setTunnelingEnabled(true));
         /*mMediaPlayer = new ExoPlayer.Builder(

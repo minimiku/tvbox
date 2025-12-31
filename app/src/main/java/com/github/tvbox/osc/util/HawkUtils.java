@@ -194,6 +194,58 @@ public class HawkUtils {
         return array[getExoRendererMode()];
     }
 
+    // ========== 多线程缓冲配置 ==========
+
+    /**
+     * 获取多线程缓冲开关状态
+     * @return true=开启, false=关闭（默认关闭，适配低内存设备）
+     */
+    public static boolean getExoBufferMultithread() {
+        return Hawk.get(HawkConfig.EXO_BUFFER_MULTITHREAD, false);
+    }
+
+    /**
+     * 切换多线程缓冲开关
+     */
+    public static void nextExoBufferMultithread() {
+        boolean current = getExoBufferMultithread();
+        Hawk.put(HawkConfig.EXO_BUFFER_MULTITHREAD, !current);
+    }
+
+    /**
+     * 获取多线程缓冲开关描述
+     */
+    public static String getExoBufferMultithreadDesc() {
+        return getExoBufferMultithread() ? "开启" : "关闭";
+    }
+
+    /**
+     * 获取缓冲线程数量
+     * @return 线程数 (1-8)，默认为2（适配低内存设备）
+     */
+    public static int getExoBufferThreadCount() {
+        return Hawk.get(HawkConfig.EXO_BUFFER_THREAD_COUNT, 2);
+    }
+
+    /**
+     * 切换缓冲线程数量 (1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 1)
+     */
+    public static void nextExoBufferThreadCount() {
+        int current = getExoBufferThreadCount();
+        current++;
+        if (current > 8) {
+            current = 1;
+        }
+        Hawk.put(HawkConfig.EXO_BUFFER_THREAD_COUNT, current);
+    }
+
+    /**
+     * 获取缓冲线程数量描述
+     */
+    public static String getExoBufferThreadCountDesc() {
+        return String.valueOf(getExoBufferThreadCount());
+    }
+
     // Vod 播放器首选
     public static int getVodPlayerPreferred() {
         return Hawk.get(HawkConfig.VOD_PLAYER_PREFERRED, 0);
