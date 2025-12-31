@@ -303,15 +303,31 @@ public final class PlayerUtils {
         if (context == null) {
             return 0;
         }
-        //先使用getUidRxBytes方法获取该进程总接收量，如果没获取到就把当前接收数据总量设置为0，否则就获取接收的总流量并转为kb
-        long nowTotalRxBytes = TrafficStats.getUidRxBytes(context.getApplicationInfo().uid) == TrafficStats.UNSUPPORTED ? 0 : (TrafficStats.getTotalRxBytes());//转为KB
+        
+        long nowTotalRxBytes;
+        // 优先使用应用级流量统计
+        long uidRxBytes = TrafficStats.getUidRxBytes(context.getApplicationInfo().uid);
+        if (uidRxBytes != TrafficStats.UNSUPPORTED && uidRxBytes > 0) {
+            nowTotalRxBytes = uidRxBytes;
+        } else {
+            // 备用方案：使用系统总流量统计（某些电视盒子不支持应用级统计）
+            long totalRxBytes = TrafficStats.getTotalRxBytes();
+            if (totalRxBytes != TrafficStats.UNSUPPORTED && totalRxBytes > 0) {
+                nowTotalRxBytes = totalRxBytes;
+            } else {
+                return 0; // 都不支持，返回0
+            }
+        }
+        
         //记录当前的时间
         long nowTimeStamp = System.currentTimeMillis();
         //上一次记录的时间-当前记录时间算出两次记录的时间差
         long calculationTime = (nowTimeStamp - lastTimeStamp);
-        //如果时间差不变，直接返回0
-        if (calculationTime == 0) {
-            return calculationTime;
+        //如果时间差不变或是首次调用，直接返回0
+        if (calculationTime == 0 || lastTimeStamp == 0) {
+            lastTimeStamp = nowTimeStamp;
+            lastTotalRxBytes = nowTotalRxBytes;
+            return 0;
         }
         //两次的数据接收量的差除以两次数据接收的时间，就计算网速了。这边的时间差是毫秒，咱们需要转换成秒。
         long speed = ((nowTotalRxBytes - lastTotalRxBytes) * 1000 / calculationTime);
@@ -319,6 +335,6 @@ public final class PlayerUtils {
         lastTimeStamp = nowTimeStamp;
         //当前总接收量存到上次接收总量这个变量，供下次计算用
         lastTotalRxBytes = nowTotalRxBytes;
-        return speed;
+        return speed < 0 ? 0 : speed; // 防止负数（比如切换网络时）
     }
 }
