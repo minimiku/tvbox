@@ -1082,22 +1082,14 @@ public class PlayActivity extends BaseActivity {
             mVodPlayerCfg = new JSONObject();
         }
         try {
-            if (!mVodPlayerCfg.has("pl")) {
-                int playType = Hawk.get(HawkConfig.PLAY_TYPE, 1);
-                boolean configurationFile = HawkUtils.getVodPlayerPreferredConfigurationFile();
-                int playerType = sourceBean.getPlayerType();
-                if (configurationFile && playerType != -1) {
-                    playType = playerType;
-                }
-                mVodPlayerCfg.put("pl", playType);
-            } else {
-                //如果手动修改过那么该处的默认值不生效
-//                boolean configurationFile = HawkUtils.getVodPlayerPreferredConfigurationFile();
-//                if (!configurationFile) {
-//                    int playType = Hawk.get(HawkConfig.PLAY_TYPE, 0);
-//                    mVodPlayerCfg.put("pl", playType);
-//                }
+            // 始终使用全局设置的播放器类型
+            int playType = Hawk.get(HawkConfig.PLAY_TYPE, 1);
+            boolean configurationFile = HawkUtils.getVodPlayerPreferredConfigurationFile();
+            int playerType = sourceBean.getPlayerType();
+            if (configurationFile && playerType != -1) {
+                playType = playerType;
             }
+            mVodPlayerCfg.put("pl", playType);
 
             if (!mVodPlayerCfg.has("pr")) {
                 mVodPlayerCfg.put("pr", Hawk.get(HawkConfig.PLAY_RENDER, 0));
